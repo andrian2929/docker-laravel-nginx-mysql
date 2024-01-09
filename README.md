@@ -26,7 +26,7 @@ Dockerize your Laravel project for easier development. This includes MySQL and N
     docker compose up -d
     ```
     
-4. Open interactive bash shell for using Docker Compose
+4. Open interactive bash shell using Docker Compose
     
     ```bash
     docker compose exec -it app bash
