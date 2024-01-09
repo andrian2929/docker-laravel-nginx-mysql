@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+      - ./docker/php-fpm/config/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+  nginx:
+    image: nginx
+    tty: true
+    ports:
+      - "8989:80"
+      - "443:443"
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/config/:/etc/nginx/conf.d/
+      - ./docker/nginx/log/error.log:/var/log/nginx/error.log
+      - ./docker/nginx/log/access.log:/var/log/nginx/access.log
+    networks:
+      - app-network
+  db:
+    image: mysql:5.7
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/config/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  mysql-data:
+    driver: local
