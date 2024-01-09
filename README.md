@@ -50,7 +50,3 @@ Dockerize your Laravel project for easier development. This includes MySQL and N
     php artisan migrate
     ```
     
-
-```bash
-
-```
