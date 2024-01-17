@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   app:
@@ -20,8 +20,8 @@ services:
     image: nginx
     tty: true
     ports:
-      - "8989:80"
-      - "443:443"
+      - '8989:80'
+      - '443:443'
     env_file:
       - .env
     volumes:
@@ -35,7 +35,7 @@ services:
     image: mysql:5.7
     tty: true
     ports:
-      - "3306:3306"
+      - '3306:3306'
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -46,6 +46,17 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./docker/mysql/config/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+  phpmyadmin:
+    image: phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - '8090:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     networks:
       - app-network
 networks:
